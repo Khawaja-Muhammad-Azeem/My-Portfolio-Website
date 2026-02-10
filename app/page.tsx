@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from "react";
 
 const PROFILE = {
   name: "Khawaja Muhammad Azeem",
-  tagline: "Clean systems. Strong execution. A portfolio that speaks.",
+  tagline: "Learning AI and Web3, one project at a time",
   subtitle:
-    "Engineering student who ships clean, reliable work — from testing pipelines to full-stack web experiences.",
-  email: "s10223616@connect.np.edu.sg",
-  phone: "82640409",
+    "Engineering student passionate about creating innovative solutions. From hardware to full-stack development, I love solving real-world problems with technology.",
+  email: "khawajaazeem0409@gmail.com",
+  phone: "+65 8840 0409",
   location: "Singapore",
   photoSrc: "/me.PNG", // FIXED: Changed to uppercase to match your file
   resumeHref: "/resume.pdf",
@@ -342,18 +342,16 @@ export default function Page() {
             <FadeInSection>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/70 backdrop-blur">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-                Portfolio • 2026-ready
+                Available for opportunities
               </div>
 
               <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
                 <span className="text-white">
-                  <TypeWriter text="Clean systems." delay={80} />
+                  <TypeWriter text="Learning AI and Web3," delay={80} />
                 </span>
                 <br />
-                <span className="text-white/90">Strong execution.</span>
-                <br />
                 <span className="bg-gradient-to-r from-violet-300 via-white to-sky-200 bg-clip-text text-transparent">
-                  A portfolio that speaks.
+                  one project at a time
                 </span>
               </h1>
 
