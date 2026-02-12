@@ -229,10 +229,10 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24 py-16 md:py-20">
-      <div className="mx-auto max-w-6xl px-5">
+    <section id={id} className="scroll-mt-20 py-12 md:scroll-mt-24 md:py-16 lg:py-20">
+      <div className="mx-auto max-w-6xl px-4 md:px-5">
         <FadeInSection>
-          <div className="mb-8 md:mb-10">
+          <div className="mb-6 md:mb-8 lg:mb-10">
             {eyebrow ? (
               <div className="mb-3 flex items-center gap-2">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.6)]" />
@@ -241,7 +241,7 @@ function Section({
                 </p>
               </div>
             ) : null}
-            <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
+            <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl lg:text-3xl">
               {title}
             </h2>
           </div>
@@ -285,16 +285,16 @@ export default function Page() {
 
       {/* Top nav */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/35 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-          <a href="#top" className="group inline-flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 ring-1 ring-white/10 transition-transform group-hover:scale-110">
-              <span className="text-sm font-semibold text-white">KM</span>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-5 md:py-4">
+          <a href="#top" className="group inline-flex items-center gap-2 md:gap-3">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 ring-1 ring-white/10 transition-transform group-hover:scale-110 md:h-9 md:w-9">
+              <span className="text-xs font-semibold text-white md:text-sm">KM</span>
             </span>
             <div className="leading-tight">
-              <div className="text-sm font-semibold text-white">
+              <div className="text-xs font-semibold text-white md:text-sm">
                 {PROFILE.name}
               </div>
-              <div className="text-xs text-white/60">{PROFILE.location}</div>
+              <div className="text-[10px] text-white/60 md:text-xs">{PROFILE.location}</div>
             </div>
           </a>
 
@@ -316,10 +316,10 @@ export default function Page() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <a
               href={PROFILE.resumeHref}
-              className="hidden rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-105 hover:bg-white/90 md:inline-flex"
+              className="hidden rounded-xl bg-white px-3 py-1.5 text-xs font-semibold text-black transition-transform hover:scale-105 hover:bg-white/90 md:inline-flex md:px-4 md:py-2 md:text-sm"
               onMouseEnter={() => setCursorVariant("hover")}
               onMouseLeave={() => setCursorVariant("default")}
             >
@@ -327,7 +327,7 @@ export default function Page() {
             </a>
             <a
               href="#contact"
-              className="inline-flex rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              className="inline-flex rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/10 md:px-4 md:py-2 md:text-sm"
             >
               Contact
             </a>
@@ -336,16 +336,16 @@ export default function Page() {
       </header>
 
       {/* Hero */}
-      <main id="top" className="mx-auto max-w-6xl px-5">
-        <section className="py-12 md:py-16">
-          <div className="grid items-center gap-10 md:grid-cols-[1.15fr_0.85fr]">
+      <main id="top" className="mx-auto max-w-6xl px-4 md:px-5">
+        <section className="py-8 md:py-12 lg:py-16">
+          <div className="grid items-center gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-10">
             <FadeInSection>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/70 backdrop-blur">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/70 backdrop-blur md:mb-5">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
                 Available for opportunities
               </div>
 
-              <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+              <h1 className="text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl lg:leading-[1.05]">
                 <span className="text-white">
                   <TypeWriter text="Learning AI and Web3," delay={80} />
                 </span>
@@ -355,14 +355,14 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/65 md:text-base">
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/65 md:mt-5 md:text-base">
                 {PROFILE.subtitle}
               </p>
 
-              <div className="mt-7 flex flex-wrap items-center gap-3">
+              <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-7">
                 <a
                   href="#contact"
-                  className="rounded-xl bg-gradient-to-r from-violet-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+                  className="rounded-xl bg-gradient-to-r from-violet-500 to-cyan-400 px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-105 md:px-5 md:py-3"
                   onMouseEnter={() => setCursorVariant("hover")}
                   onMouseLeave={() => setCursorVariant("default")}
                 >
@@ -370,22 +370,22 @@ export default function Page() {
                 </a>
                 <a
                   href={PROFILE.resumeHref}
-                  className="rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                  className="rounded-xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 md:px-5 md:py-3"
                 >
                   Download CV
                 </a>
               </div>
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:border-white/20 hover:bg-white/10">
+              <div className="mt-6 grid gap-3 sm:grid-cols-3 md:mt-8">
+                <div className="group rounded-2xl border border-white/10 bg-white/5 p-3 transition-all hover:border-white/20 hover:bg-white/10 md:p-4">
                   <div className="text-xs text-white/60">Languages</div>
                   <div className="mt-1 text-sm font-semibold">Python, TS/JS</div>
                 </div>
-                <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:border-white/20 hover:bg-white/10">
+                <div className="group rounded-2xl border border-white/10 bg-white/5 p-3 transition-all hover:border-white/20 hover:bg-white/10 md:p-4">
                   <div className="text-xs text-white/60">Hardware</div>
                   <div className="mt-1 text-sm font-semibold">Ubuntu, Arduino</div>
                 </div>
-                <div className="group rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:border-white/20 hover:bg-white/10">
+                <div className="group rounded-2xl border border-white/10 bg-white/5 p-3 transition-all hover:border-white/20 hover:bg-white/10 md:p-4">
                   <div className="text-xs text-white/60">Strength</div>
                   <div className="mt-1 text-sm font-semibold">Ownership</div>
                 </div>
@@ -408,8 +408,8 @@ export default function Page() {
                     />
                   </div>
 
-                  <div className="absolute inset-x-0 bottom-0 p-4">
-                    <div className="rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-xl">
+                  <div className="absolute inset-x-0 bottom-0 p-3 md:p-4">
+                    <div className="rounded-2xl border border-white/10 bg-black/45 p-3 backdrop-blur-xl md:p-4">
                       <div className="text-sm font-semibold">{PROFILE.name}</div>
                       <div className="mt-1 text-xs text-white/70">
                         {PROFILE.email} • {PROFILE.phone}
@@ -489,29 +489,21 @@ export default function Page() {
         <div className="grid gap-5 md:grid-cols-2">
           {PROJECTS.map((p, i) => (
             <FadeInSection key={p.title} delay={i * 100}>
-              <a
-                href={p.href}
+              <div
                 className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition-all hover:border-white/20 hover:bg-white/7 hover:shadow-[0_20px_50px_rgba(124,58,237,0.15)]"
                 onMouseEnter={() => setCursorVariant("hover")}
                 onMouseLeave={() => setCursorVariant("default")}
               >
-                <div className="absolute right-4 top-4">
-                  <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-white/60">
+                <div className="mb-4 flex items-start justify-between gap-4">
+                  <div className="text-lg font-semibold">{p.title}</div>
+                  <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-xs text-white/60">
                     {p.status}
                   </span>
                 </div>
 
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-lg font-semibold">{p.title}</div>
-                    <p className="mt-2 text-sm leading-relaxed text-white/65">
-                      {p.desc}
-                    </p>
-                  </div>
-                  <span className="mt-1 inline-flex h-10 w-10 flex-none items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70 transition-transform group-hover:scale-110 group-hover:bg-white/10">
-                    ↗
-                  </span>
-                </div>
+                <p className="text-sm leading-relaxed text-white/65">
+                  {p.desc}
+                </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.tags.map((t) => (
@@ -523,7 +515,7 @@ export default function Page() {
                     </span>
                   ))}
                 </div>
-              </a>
+              </div>
             </FadeInSection>
           ))}
         </div>
@@ -656,12 +648,12 @@ export default function Page() {
         </div>
       </Section>
 
-      <footer className="border-t border-white/10 bg-black/20 py-10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 md:flex-row md:items-center md:justify-between">
-          <div className="text-sm text-white/60">
+      <footer className="border-t border-white/10 bg-black/20 py-8 md:py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 md:flex-row md:items-center md:justify-between md:px-5">
+          <div className="text-xs text-white/60 md:text-sm">
             © {new Date().getFullYear()} {PROFILE.name}. Built with Next.js & ❤️
           </div>
-          <div className="flex items-center gap-5 text-sm text-white/60">
+          <div className="flex items-center gap-4 text-xs text-white/60 md:gap-5 md:text-sm">
             <a className="transition-colors hover:text-white" href="#about">
               About
             </a>
