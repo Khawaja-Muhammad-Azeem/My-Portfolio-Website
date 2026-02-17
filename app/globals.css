@@ -4,10 +4,11 @@
    set in next.config.js (or middleware.ts), not in CSS.
    ============================================================= */
 
-@import "tailwindcss";
-
-/* ── Google Fonts: editorial serif + clean sans ── */
+/* ── Google Fonts MUST be first — CSS spec requires all @imports
+      to precede any other rules (except @charset / @layer) ── */
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+@import "tailwindcss";
 
 :root {
   --background: #FAF9F6;
