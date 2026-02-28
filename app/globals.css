@@ -101,3 +101,54 @@ button:focus-visible {
 img, svg, video, canvas {
   transition: none;
 }
+
+/* ── Print Styles for "Save as PDF" ── */
+@media print {
+  /* Hide interactive elements */
+  header,
+  footer,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Clean page breaks */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Remove backgrounds and shadows */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  /* Keep readable text */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  h1 { font-size: 24pt; }
+  h2 { font-size: 18pt; }
+  h3 { font-size: 14pt; }
+
+  /* Keep links visible */
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666;
+  }
+
+  /* No page breaks inside cards */
+  .rounded-2xl,
+  .rounded-3xl {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px solid #ccc !important;
+    margin-bottom: 12pt;
+  }
+}

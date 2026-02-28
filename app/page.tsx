@@ -447,9 +447,8 @@ export default function Page() {
 
           <div className="flex items-center gap-2 md:gap-3">
             <ThemeToggle dark={dark} onToggle={toggleTheme} />
-            <a
-              href={PROFILE.resumeHref}
-              rel="noopener noreferrer"
+            <button
+              onClick={() => window.print()}
               className={cx(
                 "hidden rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all hover:scale-105 md:inline-flex",
                 dark
@@ -460,7 +459,7 @@ export default function Page() {
               onMouseLeave={() => hover(false)}
             >
               Download CV
-            </a>
+            </button>
             <a
               href="#contact"
               className={cx(
@@ -810,9 +809,8 @@ export default function Page() {
                 >
                   Email me
                 </a>
-                <a
-                  href={PROFILE.resumeHref}
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => window.print()}
                   className={cx(
                     "rounded-lg border px-5 py-2.5 text-sm font-semibold transition-colors",
                     dark
@@ -821,7 +819,7 @@ export default function Page() {
                   )}
                 >
                   Download CV
-                </a>
+                </button>
               </div>
             </Card>
           </FadeIn>
