@@ -1,4 +1,4 @@
-/* Clean professional portfolio - no AI slop */
+/* Clean professional design - 21st.dev inspired */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -22,6 +22,16 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 /* Scrollbar */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
@@ -31,11 +41,11 @@ body {
     background: #f1f5f9;
   }
   ::-webkit-scrollbar-thumb {
-    background: #64748b;
+    background: #cbd5e1;
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+    background: #94a3b8;
   }
 }
 
@@ -45,13 +55,11 @@ body {
   }
 }
 
-/* Selection */
 ::selection {
   background: #0f172a;
   color: white;
 }
 
-/* Focus */
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid #0f172a;
@@ -60,26 +68,17 @@ button:focus-visible {
 
 /* Print */
 @media print {
-  header,
-  footer,
-  button,
-  nav {
+  header, footer, button, nav {
     display: none !important;
   }
-
   * {
     background: white !important;
     color: black !important;
   }
-
   section {
     page-break-inside: avoid;
   }
-
-  body {
-    font-size: 11pt;
-  }
-
+  body { font-size: 11pt; }
   h1 { font-size: 24pt; }
   h2 { font-size: 18pt; }
   h3 { font-size: 14pt; }
