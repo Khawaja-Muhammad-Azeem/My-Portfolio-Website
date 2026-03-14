@@ -1,154 +1,217 @@
-/* =============================================================
-   globals.css
-   SECURITY NOTE: No sensitive data here. CSP headers should be
-   set in next.config.js (or middleware.ts), not in CSS.
-   ============================================================= */
+/* ══════════════════════════════════════════════════════════════════════════════
+   BRUTALIST-MINIMAL PORTFOLIO
+   Design System: Swiss Modernism × Electric Cyan × Monochrome Precision
+   ══════════════════════════════════════════════════════════════════════════════ */
 
-/* ── Google Fonts MUST be first — CSS spec requires all @imports
-      to precede any other rules (except @charset / @layer) ── */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+/* ── Fonts MUST come first ── */
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════════════════════════════════════════ */
 :root {
-  --background: #FAF9F6;
-  --foreground: #1c1917;
-  --font-serif: 'Lora', Georgia, serif;
-  --font-sans:  'DM Sans', system-ui, sans-serif;
+  /* Typography */
+  --font-display: 'Anybody', system-ui, sans-serif;
+  --font-sans:    'IBM Plex Mono', 'SF Mono', monospace;
+  --font-mono:    'IBM Plex Mono', monospace;
+  
+  /* Colors */
+  --bg-light:     #ffffff;
+  --fg-light:     #000000;
+  --accent-light: #000000;
+  
+  --bg-dark:      #000000;
+  --fg-dark:      #ffffff;
+  --accent-dark:  #00ffff;
+  
+  --cyan:         #00ffff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --font-family-display: var(--font-display);
+  --font-family-sans:    var(--font-sans);
+  --font-family-mono:    var(--font-mono);
 }
 
-/* ── Base ── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ══════════════════════════════════════════════════════════════════════════════ */
 html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background:              var(--background);
-  color:                   var(--foreground);
-  font-family:             var(--font-sans);
-  -webkit-font-smoothing:  antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-mono);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  letter-spacing: -0.01em;
 }
 
-/* ── Serif utility ── */
-.font-serif {
-  font-family: var(--font-serif);
-}
+/* Font utility classes */
+.font-display { font-family: var(--font-display); font-weight: 700; }
+.font-sans    { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); }
 
-/* ── Custom scrollbar (desktop only) ── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ══════════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 768px) {
-  ::-webkit-scrollbar       { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background:    rgba(217, 119, 6, 0.35);
-    border-radius: 8px;
+  ::-webkit-scrollbar {
+    width: 4px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(217, 119, 6, 0.6);
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--cyan);
+    border-radius: 0;
   }
 }
 
-/* ── Hide scrollbar on mobile ── */
 @media (max-width: 767px) {
-  ::-webkit-scrollbar { display: none; }
+  ::-webkit-scrollbar {
+    display: none;
+  }
   body {
     -ms-overflow-style: none;
-    scrollbar-width:    none;
+    scrollbar-width: none;
   }
 }
 
-/* ── Focus rings ── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   INTERACTIONS
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Selection */
+::selection {
+  background: var(--cyan);
+  color: #000;
+}
+
+/* Focus states */
 a:focus-visible,
 button:focus-visible {
-  outline:        2px solid rgba(245, 158, 11, 0.7);
-  outline-offset: 3px;
-  border-radius:  4px;
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
 }
 
-/* ── Mobile touch targets ── */
-@media (max-width: 768px) {
-  a, button {
-    min-height: 44px;
-    min-width:  44px;
+/* Hover transitions */
+a, button {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Hero name stagger */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* ── iOS safe areas ── */
-@supports (padding: env(safe-area-inset-left)) {
-  body {
-    padding-left:  env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+h1 span {
+  animation: slideIn 0.6s ease-out both;
+}
+
+/* Pulse for live indicators */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
   }
 }
 
-/* ── Smooth theme transitions ── */
-*,
-*::before,
-*::after {
-  transition-property: background-color, border-color, color;
-  transition-duration: 200ms;
-  transition-timing-function: ease;
-}
-
-/* Exclude transitions on transforms/opacity to avoid fighting animation components */
-img, svg, video, canvas {
-  transition: none;
-}
-
-/* ── Print Styles for "Save as PDF" ── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ══════════════════════════════════════════════════════════════════════════════ */
 @media print {
-  /* Hide interactive elements */
   header,
   footer,
   button,
-  .no-print {
+  nav {
     display: none !important;
   }
 
-  /* Clean page breaks */
+  * {
+    background: white !important;
+    color: black !important;
+    border-color: #000 !important;
+  }
+
   section {
     page-break-inside: avoid;
     break-inside: avoid;
   }
 
-  /* Remove backgrounds and shadows */
-  * {
-    background: white !important;
-    color: black !important;
-    box-shadow: none !important;
-    border-color: #ccc !important;
-  }
-
-  /* Keep readable text */
   body {
-    font-size: 12pt;
-    line-height: 1.5;
+    font-size: 11pt;
   }
 
-  h1 { font-size: 24pt; }
-  h2 { font-size: 18pt; }
-  h3 { font-size: 14pt; }
+  h1 { font-size: 28pt; margin-bottom: 12pt; }
+  h2 { font-size: 18pt; margin-bottom: 8pt; }
+  h3 { font-size: 14pt; margin-bottom: 6pt; }
 
-  /* Keep links visible */
   a::after {
     content: " (" attr(href) ")";
-    font-size: 9pt;
+    font-size: 8pt;
     color: #666;
   }
+}
 
-  /* No page breaks inside cards */
-  .rounded-2xl,
-  .rounded-3xl {
-    page-break-inside: avoid;
-    break-inside: avoid;
-    border: 1px solid #ccc !important;
-    margin-bottom: 12pt;
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATIONS
+   ══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Ensure touch targets are at least 44×44px */
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* iOS safe areas */
+@supports (padding: env(safe-area-inset-left)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Prevent text size adjustment on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PERFORMANCE
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* GPU acceleration for transforms */
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
