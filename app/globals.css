@@ -1,44 +1,41 @@
-/* Modern portfolio with glassmorphism and micro-interactions */
+/* Clean professional portfolio - no AI slop */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
 }
 
 @theme inline {
   --font-family-sans: var(--font-sans);
 }
 
-/* Base */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: "kern" 1, "liga" 1;
 }
 
-/* Custom scrollbar */
+/* Scrollbar */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: rgba(31, 41, 55, 0.5);
+    background: #f1f5f9;
   }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #3b82f6, #8b5cf6);
-    border-radius: 3px;
+    background: #64748b;
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #2563eb, #7c3aed);
+    background: #475569;
   }
 }
 
@@ -46,61 +43,22 @@ body {
   ::-webkit-scrollbar {
     display: none;
   }
-  body {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }
 
 /* Selection */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: #0f172a;
   color: white;
 }
 
-/* Focus states */
+/* Focus */
 a:focus-visible,
 button:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #0f172a;
   outline-offset: 2px;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, opacity, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-/* Disable transitions on images and gradients */
-img,
-svg,
-video,
-[class*="gradient"] {
-  transition: none;
-}
-
-/* Glassmorphism utilities */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Animate ping (status dot) */
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-ping {
-  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-/* Print styles */
+/* Print */
 @media print {
   header,
   footer,
@@ -116,7 +74,6 @@ video,
 
   section {
     page-break-inside: avoid;
-    break-inside: avoid;
   }
 
   body {
@@ -128,7 +85,7 @@ video,
   h3 { font-size: 14pt; }
 }
 
-/* Mobile optimizations */
+/* Mobile */
 @media (max-width: 768px) {
   a, button {
     min-height: 44px;
@@ -136,7 +93,6 @@ video,
   }
 }
 
-/* iOS safe areas */
 @supports (padding: env(safe-area-inset-left)) {
   body {
     padding-left: env(safe-area-inset-left);
@@ -144,36 +100,13 @@ video,
   }
 }
 
-/* Text size adjustment */
 html {
   -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  * {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Custom gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Glow effect */
-.glow {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-.glow-hover:hover {
-  box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
 }
