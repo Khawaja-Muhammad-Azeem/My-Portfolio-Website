@@ -3,16 +3,15 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
+import * as THREE from "three";
 import { 
   Github, Linkedin, Twitter, Mail, Phone, MapPin, 
-  ArrowUpRight, Download, Moon, Sun, Menu, X,
-  Code, Briefcase, Award, Zap
+  ArrowUpRight, Download, Moon, Sun, Menu, X, Zap, Code
 } from "lucide-react";
 
 const PROFILE = {
-  name: "Khawaja Muhammad Azeem",
-  initials: "KMA",
+  name: "Azeem",
   title: "Engineering Student, Developer & Police Tactical Trooper",
   location: "Singapore",
   email: "khawajaazeem0409@gmail.com",
@@ -42,22 +41,82 @@ const PROJECTS = [
   { title: "IoT Automation", desc: "Arduino-based smart systems.", tags: ["C++", "Python"] },
 ];
 
-const NS_JOURNEY = [
-  { period: "Apr 2025 – Present", title: "Tactical Trooper", desc: "Company 3, SOC", icon: Award },
-  { period: "Jan – Apr 2025", title: "Tactical Course", desc: "Marksman (Taurus & MP5)", icon: Award },
-  { period: "Aug 2024 – Jan 2025", title: "Basic Course", desc: "SPF Foundation", icon: Briefcase },
-];
-
 const SKILLS = ["Python", "TypeScript", "React", "Next.js", "C++", "Solidity", "Arduino", "Firebase"];
+
+// 3D Floating Sphere Component (background for photo)
+const FloatingSphere = () => {
+  const mountRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (!mountRef.current) return;
+    const container = mountRef.current;
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    
+    const size = Math.min(window.innerWidth * 0.4, 500);
+    renderer.setSize(size, size);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+    
+    // Create wireframe sphere
+    const geometry = new THREE.IcosahedronGeometry(2.5, 1);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x666666,
+      wireframe: true,
+      emissive: 0x333333,
+      emissiveIntensity: 0.3,
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+    
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xaaaaaa, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+    
+    camera.position.z = 6;
+    
+    let animationId: number;
+    const animate = () => {
+      animationId = requestAnimationFrame(animate);
+      sphere.rotation.x += 0.002;
+      sphere.rotation.y += 0.003;
+      renderer.render(scene, camera);
+    };
+    animate();
+    
+    const handleResize = () => {
+      const newSize = Math.min(window.innerWidth * 0.4, 500);
+      renderer.setSize(newSize, newSize);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
+      container.removeChild(renderer.domElement);
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, []);
+  
+  return <div ref={mountRef} className="absolute inset-0 flex items-center justify-center" />;
+};
 
 // Video Background Component
 const VideoBackground = ({ isDark }: { isDark: boolean }) => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
-      <div className={`absolute inset-0 ${isDark ? 'bg-gray-950' : 'bg-white'} transition-colors duration-500`} />
-      <div className={`absolute inset-0 ${isDark ? 'opacity-20' : 'opacity-10'}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 animate-gradient" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIxMjEyMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20" />
+      <div className={`absolute inset-0 ${isDark ? 'bg-black' : 'bg-white'} transition-colors duration-500`} />
+      <div className={`absolute inset-0 ${isDark ? 'opacity-15' : 'opacity-8'}`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 animate-gradient" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMzMzMzMyIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-10" />
       </div>
     </div>
   );
@@ -79,7 +138,7 @@ export default function Portfolio() {
   const toggleTheme = () => setIsDark(!isDark);
 
   const textColor = isDark ? "text-white" : "text-gray-900";
-  const bgColor = isDark ? "bg-gray-900" : "bg-white";
+  const bgColor = isDark ? "bg-black" : "bg-white";
   const borderColor = isDark ? "border-white/10" : "border-gray-200";
   const glassColor = isDark ? "bg-white/5" : "bg-white/70";
 
@@ -89,7 +148,7 @@ export default function Portfolio() {
       
       {/* Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900 z-50 origin-left"
         style={{ scaleX }}
       />
 
@@ -103,20 +162,12 @@ export default function Portfolio() {
       >
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex h-20 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl border-2 ${
-                isDark ? 'border-indigo-400 bg-indigo-500/20' : 'border-indigo-600 bg-indigo-50'
-              } font-bold backdrop-blur-sm`}>
-                {PROFILE.initials}
-              </div>
-              <span className="hidden text-xl font-bold sm:block">Azeem</span>
-            </div>
+            <span className="text-2xl font-black">{PROFILE.name}</span>
             
-            <nav className="hidden gap-8 text-sm font-medium md:flex">
-              <a href="#building" className="hover:text-indigo-500 transition-colors">Building</a>
-              <a href="#work" className="hover:text-indigo-500 transition-colors">Work</a>
-              <a href="#ns" className="hover:text-indigo-500 transition-colors">NS</a>
-              <a href="#contact" className="hover:text-indigo-500 transition-colors">Contact</a>
+            <nav className="hidden gap-8 text-sm font-bold md:flex">
+              <a href="#building" className="hover:text-gray-600 transition-colors">Building</a>
+              <a href="#work" className="hover:text-gray-600 transition-colors">Work</a>
+              <a href="#contact" className="hover:text-gray-600 transition-colors">Contact</a>
             </nav>
             
             <div className="flex items-center gap-3">
@@ -146,10 +197,9 @@ export default function Portfolio() {
           exit={{ opacity: 0, x: 100 }}
           className={`fixed right-0 top-20 z-30 h-screen w-64 ${glassColor} backdrop-blur-2xl border-l ${borderColor} p-6 md:hidden`}
         >
-          <nav className="flex flex-col gap-6 text-lg font-medium">
+          <nav className="flex flex-col gap-6 text-lg font-bold">
             <a href="#building" onClick={() => setMobileMenuOpen(false)}>Building</a>
             <a href="#work" onClick={() => setMobileMenuOpen(false)}>Work</a>
-            <a href="#ns" onClick={() => setMobileMenuOpen(false)}>NS</a>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           </nav>
         </motion.div>
@@ -158,7 +208,7 @@ export default function Portfolio() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20">
         <div className="mx-auto max-w-7xl px-6 py-20">
-          <div className="grid gap-16 lg:grid-cols-2 items-center">
+          <div className="grid gap-16 lg:grid-cols-[1.2fr_1fr] items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -168,10 +218,10 @@ export default function Portfolio() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-emerald-500 bg-emerald-500/10 px-5 py-2 backdrop-blur-sm"
+                className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-gray-900 bg-gray-900/10 px-5 py-2 backdrop-blur-sm"
               >
-                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-                <span className="text-sm font-bold uppercase tracking-wider text-emerald-500">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-gray-900" />
+                <span className="text-sm font-black uppercase tracking-wider">
                   Open to Collaboration
                 </span>
               </motion.div>
@@ -180,26 +230,15 @@ export default function Portfolio() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="mb-6 text-6xl font-black leading-[1.1] tracking-tight md:text-7xl lg:text-8xl"
-                style={{ fontFamily: 'var(--font-display)' }}
+                className="mb-6 text-7xl font-black leading-[1.05] tracking-tighter md:text-8xl lg:text-9xl"
               >
-                {PROFILE.name.split(" ").map((word, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
-                    className={`block ${i === 2 ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent' : ''}`}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
+                {PROFILE.name}
               </motion.h1>
               
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                transition={{ delay: 0.5 }}
                 className="mb-4 text-2xl font-bold"
               >
                 {PROFILE.title}
@@ -208,8 +247,8 @@ export default function Portfolio() {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className={`mb-10 max-w-xl text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+                transition={{ delay: 0.6 }}
+                className={`mb-10 max-w-xl text-lg leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
               >
                 {PROFILE.tagline}
               </motion.p>
@@ -217,14 +256,14 @@ export default function Portfolio() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
+                transition={{ delay: 0.7 }}
                 className="flex flex-wrap gap-4"
               >
                 <motion.a
-                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.4)" }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   href="#contact"
-                  className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-lg"
+                  className="group flex items-center gap-2 rounded-xl bg-gray-900 px-8 py-4 text-base font-black text-white shadow-xl"
                 >
                   Let's Collaborate
                   <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -234,7 +273,7 @@ export default function Portfolio() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => window.print()}
-                  className={`flex items-center gap-2 rounded-xl ${glassColor} backdrop-blur-xl border-2 ${borderColor} px-8 py-4 text-base font-bold`}
+                  className={`flex items-center gap-2 rounded-xl ${glassColor} backdrop-blur-xl border-2 ${borderColor} px-8 py-4 text-base font-black`}
                 >
                   <Download className="h-5 w-5" />
                   Download CV
@@ -244,14 +283,14 @@ export default function Portfolio() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
+                transition={{ delay: 0.8 }}
                 className="mt-8 flex gap-4"
               >
                 {[Github, Linkedin, Twitter].map((Icon, i) => (
                   <motion.div
                     key={i}
-                    whileHover={{ scale: 1.1, y: -4 }}
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${glassColor} backdrop-blur-xl border ${borderColor} cursor-pointer`}
+                    whileHover={{ scale: 1.15, y: -4 }}
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${glassColor} backdrop-blur-xl border ${borderColor} cursor-pointer transition-all`}
                   >
                     <Icon className="h-5 w-5" />
                   </motion.div>
@@ -259,22 +298,28 @@ export default function Portfolio() {
               </motion.div>
             </motion.div>
 
+            {/* Photo with 3D Sphere Background */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="relative"
+              transition={{ duration: 1, delay: 0.4 }}
+              className="relative h-[500px] lg:h-[600px]"
             >
-              <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-30 blur-3xl" />
-              <div className="relative">
-                <div className={`aspect-[4/5] overflow-hidden rounded-3xl border-4 ${borderColor} ${glassColor} backdrop-blur-xl shadow-2xl`}>
+              {/* 3D Sphere Background */}
+              <div className="absolute inset-0">
+                <FloatingSphere />
+              </div>
+              
+              {/* Photo Overlay */}
+              <div className="relative z-10 flex items-center justify-center h-full">
+                <div className={`w-80 h-80 lg:w-96 lg:h-96 overflow-hidden rounded-3xl border-4 ${borderColor} ${glassColor} backdrop-blur-xl shadow-2xl`}>
                   <Image
                     src={PROFILE.photo}
                     alt={PROFILE.name}
                     fill
                     priority
                     className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, 600px"
+                    sizes="400px"
                   />
                 </div>
               </div>
@@ -290,7 +335,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-16 text-5xl font-black md:text-6xl"
+            className="mb-16 text-6xl font-black md:text-7xl"
           >
             Currently Building
           </motion.h2>
@@ -306,18 +351,18 @@ export default function Portfolio() {
                 whileHover={{ y: -8, scale: 1.02 }}
                 className={`group relative overflow-hidden rounded-3xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-8 shadow-xl transition-all`}
               >
-                <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
+                <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-gray-500/10 blur-3xl" />
                 <div className="relative">
-                  <item.icon className="mb-6 h-12 w-12 text-indigo-500" />
-                  <h3 className="mb-4 text-2xl font-bold">{item.title}</h3>
-                  <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <item.icon className="mb-6 h-12 w-12" />
+                  <h3 className="mb-4 text-2xl font-black">{item.title}</h3>
+                  <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                     {item.desc}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {item.tags.map(tag => (
                       <span
                         key={tag}
-                        className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-4 py-2 text-sm font-semibold`}
+                        className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-4 py-2 text-sm font-bold`}
                       >
                         {tag}
                       </span>
@@ -337,7 +382,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-16 text-5xl font-black md:text-6xl"
+            className="mb-16 text-6xl font-black md:text-7xl"
           >
             Projects
           </motion.h2>
@@ -351,55 +396,20 @@ export default function Portfolio() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -6, scale: 1.03 }}
-                className={`rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-7 shadow-lg`}
+                className={`rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-7 shadow-lg transition-all`}
               >
-                <h3 className="mb-3 text-xl font-bold">{p.title}</h3>
-                <p className={`mb-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{p.desc}</p>
+                <h3 className="mb-3 text-xl font-black">{p.title}</h3>
+                <p className={`mb-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{p.desc}</p>
                 <div className="flex flex-wrap gap-2">
                   {p.tags.map(t => (
                     <span
                       key={t}
-                      className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-3 py-1.5 text-sm font-medium`}
+                      className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-3 py-1.5 text-sm font-bold`}
                     >
                       {t}
                     </span>
                   ))}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* NS Section */}
-      <section id="ns" className="relative py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16 text-5xl font-black md:text-6xl"
-          >
-            National Service
-          </motion.h2>
-          
-          <div className="grid gap-6 md:grid-cols-3">
-            {NS_JOURNEY.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6 }}
-                className={`rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-7`}
-              >
-                <item.icon className="mb-4 h-10 w-10 text-indigo-500" />
-                <div className={`mb-3 text-sm font-bold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {item.period}
-                </div>
-                <h3 className="mb-2 text-xl font-bold">{item.title}</h3>
-                <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -413,7 +423,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-10 text-4xl font-black"
+            className="mb-10 text-5xl font-black"
           >
             Skills
           </motion.h3>
@@ -426,7 +436,7 @@ export default function Portfolio() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ scale: 1.1, y: -4 }}
-                className={`rounded-xl border-2 ${borderColor} ${glassColor} backdrop-blur-xl px-6 py-3 text-base font-bold`}
+                className={`rounded-xl border-2 ${borderColor} ${glassColor} backdrop-blur-xl px-6 py-3 text-base font-black transition-all`}
               >
                 {s}
               </motion.span>
@@ -442,7 +452,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-16 text-5xl font-black md:text-6xl"
+            className="mb-16 text-6xl font-black md:text-7xl"
           >
             Get in Touch
           </motion.h2>
@@ -453,14 +463,14 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <p className={`mb-10 text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p className={`mb-10 text-lg leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 Open to collaborations, entrepreneurial opportunities, and building with great founders.
               </p>
               <motion.a
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
                 href={`mailto:${PROFILE.email}`}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-lg"
+                className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-8 py-4 text-base font-black text-white shadow-xl"
               >
                 <Mail className="h-5 w-5" />
                 Send Email
@@ -479,17 +489,17 @@ export default function Portfolio() {
                 { icon: MapPin, label: "Location", value: PROFILE.location },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <item.icon className="h-6 w-6 text-indigo-500" />
+                  <item.icon className="h-6 w-6" />
                   <div>
-                    <div className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-sm font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
                       {item.label}
                     </div>
                     {item.href ? (
-                      <a href={item.href} className="text-lg font-bold hover:text-indigo-500">
+                      <a href={item.href} className="text-lg font-black hover:text-gray-600">
                         {item.value}
                       </a>
                     ) : (
-                      <span className="text-lg font-bold">{item.value}</span>
+                      <span className="text-lg font-black">{item.value}</span>
                     )}
                   </div>
                 </div>
@@ -501,7 +511,7 @@ export default function Portfolio() {
 
       {/* Footer */}
       <footer className={`border-t-2 ${borderColor} py-10`}>
-        <div className="mx-auto max-w-7xl px-6 text-center text-base font-medium">
+        <div className="mx-auto max-w-7xl px-6 text-center text-base font-bold">
           © {new Date().getFullYear()} {PROFILE.name}
         </div>
       </footer>
