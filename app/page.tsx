@@ -3,381 +3,508 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { 
+  Github, Linkedin, Twitter, Mail, Phone, MapPin, 
+  ArrowUpRight, Download, Moon, Sun, Menu, X,
+  Code, Briefcase, Award, Zap
+} from "lucide-react";
 
 const PROFILE = {
   name: "Khawaja Muhammad Azeem",
+  initials: "KMA",
   title: "Engineering Student, Developer & Police Tactical Trooper",
   location: "Singapore",
   email: "khawajaazeem0409@gmail.com",
   phone: "+65 8840 0409",
   photo: "/me.PNG",
-  tagline: "Building AI automation tools for businesses. Currently serving in SPF Special Operations Command.",
+  tagline: "Building AI automation tools while serving in SPF Special Operations Command.",
 };
 
 const CURRENTLY_BUILDING = [
   {
-    title: "WhatsApp AI Agent Platform",
-    desc: "Intelligent customer service automation for Singapore tuition centres using Claude API.",
-    status: "Active",
-    tech: ["Next.js", "TypeScript", "Claude API"],
+    title: "WhatsApp AI Agent",
+    desc: "Intelligent customer service automation for Singapore tuition centres.",
+    icon: Zap,
+    tags: ["Next.js", "Claude API", "TypeScript"],
   },
   {
-    title: "PTMS (Personnel Management System)",
-    desc: "Internal tracking system for SPF Company 3, SOC to streamline personnel operations.",
-    status: "Deploying",
-    tech: ["React", "Firebase", "Tailwind"],
+    title: "PTMS System",
+    desc: "Personnel tracking for SPF Company 3, SOC operations.",
+    icon: Code,
+    tags: ["React", "Firebase", "Tailwind"],
   },
 ];
 
 const PROJECTS = [
-  {
-    title: "Rug Visualizer",
-    desc: "Interactive design tool for room visualization with drag, rotate, and resize capabilities.",
-    tech: ["Next.js", "TypeScript", "Fabric.js"],
-  },
-  {
-    title: "Web3 Academy",
-    desc: "Educational platform for blockchain fundamentals and smart contract development.",
-    tech: ["Solidity", "React", "Web3.js"],
-  },
-  {
-    title: "IoT Automation",
-    desc: "Arduino-based sensors and Ubuntu system configurations for smart applications.",
-    tech: ["C++", "Python", "Arduino"],
-  },
+  { title: "Rug Visualizer", desc: "Interactive room design with drag & resize.", tags: ["Next.js", "Fabric.js"] },
+  { title: "Web3 Academy", desc: "Blockchain education platform.", tags: ["Solidity", "React"] },
+  { title: "IoT Automation", desc: "Arduino-based smart systems.", tags: ["C++", "Python"] },
 ];
 
 const NS_JOURNEY = [
-  {
-    period: "Aug 2024 – Jan 2025",
-    title: "Police Officer Basic Course",
-    org: "Singapore Police Force",
-  },
-  {
-    period: "Jan 2025 – Apr 2025",
-    title: "Police Tactical Course",
-    org: "Special Operations Command",
-    highlight: "Passed out as Police Tactical Trooper",
-    achievements: ["Promoted: SC → SC2 → SC/CPL → SC/SGT(1)", "Marksman: Taurus Revolver (.38) & HK MP5"],
-  },
-  {
-    period: "Apr 2025 – Present",
-    title: "Police Tactical Trooper",
-    org: "Company 3, SOC",
-    projects: [
-      "Solution holder design for operational efficiency",
-      "Unit identity T-shirt design",
-      "PTMS development for Company Commander",
-    ],
-  },
-];
-
-const WORK = {
-  role: "Assistant Production Engineer",
-  company: "Ascent Solutions",
-  period: "Mar – Aug 2023",
-  points: [
-    "648 sensor boards/day with zero-defect quality",
-    "Led tracker configuration team",
-    "Systematic troubleshooting protocols",
-  ],
-};
-
-const EDUCATION = [
-  {
-    degree: "Electronics & Computer Engineering",
-    school: "Ngee Ann Polytechnic",
-    period: "2021 – 2024",
-    note: "Idea Champions Top 10",
-  },
-  {
-    degree: "GCE O' Levels",
-    school: "Yuying Secondary",
-    period: "2020",
-    note: "Edusave Scholarship",
-  },
+  { period: "Apr 2025 – Present", title: "Tactical Trooper", desc: "Company 3, SOC", icon: Award },
+  { period: "Jan – Apr 2025", title: "Tactical Course", desc: "Marksman (Taurus & MP5)", icon: Award },
+  { period: "Aug 2024 – Jan 2025", title: "Basic Course", desc: "SPF Foundation", icon: Briefcase },
 ];
 
 const SKILLS = ["Python", "TypeScript", "React", "Next.js", "C++", "Solidity", "Arduino", "Firebase"];
 
-function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const [show, setShow] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([e]) => e.isIntersecting && setTimeout(() => setShow(true), delay),
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [delay]);
-
+// Video Background Component
+const VideoBackground = ({ isDark }: { isDark: boolean }) => {
   return (
-    <div ref={ref} className={`transition-all duration-500 ${show ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}>
-      {children}
+    <div className="fixed inset-0 -z-10 overflow-hidden">
+      <div className={`absolute inset-0 ${isDark ? 'bg-gray-950' : 'bg-white'} transition-colors duration-500`} />
+      <div className={`absolute inset-0 ${isDark ? 'opacity-20' : 'opacity-10'}`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 animate-gradient" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzIxMjEyMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20" />
+      </div>
     </div>
   );
-}
+};
 
 export default function Portfolio() {
+  const [isDark, setIsDark] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const toggleTheme = () => setIsDark(!isDark);
+
+  const textColor = isDark ? "text-white" : "text-gray-900";
+  const bgColor = isDark ? "bg-gray-900" : "bg-white";
+  const borderColor = isDark ? "border-white/10" : "border-gray-200";
+  const glassColor = isDark ? "bg-white/5" : "bg-white/70";
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen ${bgColor} ${textColor} transition-colors duration-500`}>
+      <VideoBackground isDark={isDark} />
       
-      {/* Header */}
-      <header className={`fixed top-0 z-50 w-full transition-all ${
-        scrolled ? "border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm" : ""
-      }`}>
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <a href="#" className="text-lg font-bold text-gray-900">Azeem</a>
-          <nav className="hidden gap-6 text-sm font-medium md:flex">
-            <a href="#building" className="text-gray-700 hover:text-gray-900">Building</a>
-            <a href="#work" className="text-gray-700 hover:text-gray-900">Work</a>
-            <a href="#ns" className="text-gray-700 hover:text-gray-900">NS</a>
-            <a href="#contact" className="text-gray-700 hover:text-gray-900">Contact</a>
-          </nav>
-          <a href="#contact" className="rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800">
-            Get in touch
-          </a>
+      {/* Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-50 origin-left"
+        style={{ scaleX }}
+      />
+
+      {/* Sticky Header */}
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          scrolled ? `${glassColor} backdrop-blur-2xl border-b ${borderColor} shadow-lg` : ""
+        }`}
+      >
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex h-20 items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`flex h-12 w-12 items-center justify-center rounded-xl border-2 ${
+                isDark ? 'border-indigo-400 bg-indigo-500/20' : 'border-indigo-600 bg-indigo-50'
+              } font-bold backdrop-blur-sm`}>
+                {PROFILE.initials}
+              </div>
+              <span className="hidden text-xl font-bold sm:block">Azeem</span>
+            </div>
+            
+            <nav className="hidden gap-8 text-sm font-medium md:flex">
+              <a href="#building" className="hover:text-indigo-500 transition-colors">Building</a>
+              <a href="#work" className="hover:text-indigo-500 transition-colors">Work</a>
+              <a href="#ns" className="hover:text-indigo-500 transition-colors">NS</a>
+              <a href="#contact" className="hover:text-indigo-500 transition-colors">Contact</a>
+            </nav>
+            
+            <div className="flex items-center gap-3">
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className={`p-3 rounded-xl ${glassColor} backdrop-blur-xl border ${borderColor}`}
+              >
+                {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </motion.button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className={`md:hidden p-3 rounded-xl ${glassColor} backdrop-blur-xl border ${borderColor}`}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-32 pb-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr]">
-          <FadeIn>
-            <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-600 bg-emerald-50 px-4 py-1.5 text-sm font-semibold text-emerald-700">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-600"></span>
-                Open to collaboration
-              </div>
-              <h1 className="mb-4 text-5xl font-bold leading-tight text-gray-900 md:text-6xl">{PROFILE.name}</h1>
-              <p className="mb-4 text-2xl font-medium text-gray-800">{PROFILE.title}</p>
-              <p className="mb-8 max-w-xl text-lg leading-relaxed text-gray-700">{PROFILE.tagline}</p>
-              <div className="mb-8 flex flex-wrap gap-3">
-                <a href="#contact" className="rounded-lg bg-gray-900 px-7 py-3.5 text-base font-semibold text-white hover:bg-gray-800">
-                  Let's work together
-                </a>
-                <button onClick={() => window.print()} className="rounded-lg border-2 border-gray-300 px-7 py-3.5 text-base font-semibold text-gray-900 hover:border-gray-400 hover:bg-gray-50">
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 100 }}
+          className={`fixed right-0 top-20 z-30 h-screen w-64 ${glassColor} backdrop-blur-2xl border-l ${borderColor} p-6 md:hidden`}
+        >
+          <nav className="flex flex-col gap-6 text-lg font-medium">
+            <a href="#building" onClick={() => setMobileMenuOpen(false)}>Building</a>
+            <a href="#work" onClick={() => setMobileMenuOpen(false)}>Work</a>
+            <a href="#ns" onClick={() => setMobileMenuOpen(false)}>NS</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+          </nav>
+        </motion.div>
+      )}
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center pt-20">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="grid gap-16 lg:grid-cols-2 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-emerald-500 bg-emerald-500/10 px-5 py-2 backdrop-blur-sm"
+              >
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                <span className="text-sm font-bold uppercase tracking-wider text-emerald-500">
+                  Open to Collaboration
+                </span>
+              </motion.div>
+              
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mb-6 text-6xl font-black leading-[1.1] tracking-tight md:text-7xl lg:text-8xl"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {PROFILE.name.split(" ").map((word, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                    className={`block ${i === 2 ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent' : ''}`}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </motion.h1>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="mb-4 text-2xl font-bold"
+              >
+                {PROFILE.title}
+              </motion.p>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className={`mb-10 max-w-xl text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+              >
+                {PROFILE.tagline}
+              </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                className="flex flex-wrap gap-4"
+              >
+                <motion.a
+                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.4)" }}
+                  whileTap={{ scale: 0.95 }}
+                  href="#contact"
+                  className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-lg"
+                >
+                  Let's Collaborate
+                  <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </motion.a>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => window.print()}
+                  className={`flex items-center gap-2 rounded-xl ${glassColor} backdrop-blur-xl border-2 ${borderColor} px-8 py-4 text-base font-bold`}
+                >
+                  <Download className="h-5 w-5" />
                   Download CV
-                </button>
-              </div>
-              {/* Social icons */}
-              <div className="flex gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-gray-300 text-gray-700 transition-colors hover:border-gray-900 hover:bg-gray-50">
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-gray-300 text-gray-700 transition-colors hover:border-gray-900 hover:bg-gray-50">
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-gray-300 text-gray-700 transition-colors hover:border-gray-900 hover:bg-gray-50">
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-                </div>
-              </div>
-            </div>
-          </FadeIn>
+                </motion.button>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="mt-8 flex gap-4"
+              >
+                {[Github, Linkedin, Twitter].map((Icon, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.1, y: -4 }}
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${glassColor} backdrop-blur-xl border ${borderColor} cursor-pointer`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
 
-          <FadeIn delay={100}>
-            <div className="relative">
-              <div className="aspect-[4/5] overflow-hidden rounded-2xl border-2 border-gray-200 shadow-xl">
-                <Image src={PROFILE.photo} alt={PROFILE.name} fill priority className="object-cover object-top" sizes="500px" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="relative"
+            >
+              <div className="absolute -inset-8 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-30 blur-3xl" />
+              <div className="relative">
+                <div className={`aspect-[4/5] overflow-hidden rounded-3xl border-4 ${borderColor} ${glassColor} backdrop-blur-xl shadow-2xl`}>
+                  <Image
+                    src={PROFILE.photo}
+                    alt={PROFILE.name}
+                    fill
+                    priority
+                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 100vw, 600px"
+                  />
+                </div>
               </div>
-              <div className="absolute -bottom-4 -right-4 rounded-xl border-2 border-gray-200 bg-white px-5 py-3 shadow-lg">
-                <p className="text-sm font-semibold text-gray-900">📍 {PROFILE.location}</p>
-              </div>
-            </div>
-          </FadeIn>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Currently Building */}
-      <section id="building" className="border-t border-gray-200 bg-gray-50 py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <FadeIn>
-            <h2 className="mb-12 text-4xl font-bold text-gray-900">Currently Building</h2>
-          </FadeIn>
-          <div className="grid gap-6 md:grid-cols-2">
+      <section id="building" className="relative py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 text-5xl font-black md:text-6xl"
+          >
+            Currently Building
+          </motion.h2>
+          
+          <div className="grid gap-8 md:grid-cols-2">
             {CURRENTLY_BUILDING.map((item, i) => (
-              <FadeIn key={i} delay={i * 100}>
-                <div className="rounded-2xl border-2 border-gray-200 bg-white p-7 shadow-sm transition-shadow hover:shadow-md">
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <h3 className="text-2xl font-bold text-gray-900">{item.title}</h3>
-                    <span className="whitespace-nowrap rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-800">{item.status}</span>
-                  </div>
-                  <p className="mb-5 text-base leading-relaxed text-gray-700">{item.desc}</p>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className={`group relative overflow-hidden rounded-3xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-8 shadow-xl transition-all`}
+              >
+                <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-2xl" />
+                <div className="relative">
+                  <item.icon className="mb-6 h-12 w-12 text-indigo-500" />
+                  <h3 className="mb-4 text-2xl font-bold">{item.title}</h3>
+                  <p className={`mb-6 leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {item.desc}
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {item.tech.map(t => <span key={t} className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800">{t}</span>)}
+                    {item.tags.map(tag => (
+                      <span
+                        key={tag}
+                        className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-4 py-2 text-sm font-semibold`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
-              </FadeIn>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Projects */}
-      <section id="work" className="py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <FadeIn><h2 className="mb-12 text-4xl font-bold text-gray-900">Projects</h2></FadeIn>
+      <section id="work" className="relative py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 text-5xl font-black md:text-6xl"
+          >
+            Projects
+          </motion.h2>
+          
           <div className="grid gap-6 md:grid-cols-3">
             {PROJECTS.map((p, i) => (
-              <FadeIn key={i} delay={i * 100}>
-                <div className="group rounded-2xl border-2 border-gray-200 bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
-                  <h3 className="mb-3 text-xl font-bold text-gray-900">{p.title}</h3>
-                  <p className="mb-4 text-base leading-relaxed text-gray-700">{p.desc}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {p.tech.map(t => <span key={t} className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-800">{t}</span>)}
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-
-          <FadeIn delay={300}>
-            <div className="mt-12">
-              <h3 className="mb-6 text-3xl font-bold text-gray-900">Professional Experience</h3>
-              <div className="rounded-2xl border-2 border-gray-200 bg-white p-7">
-                <div className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
-                  <div>
-                    <h4 className="text-xl font-bold text-gray-900">{WORK.role}</h4>
-                    <p className="text-lg font-medium text-gray-700">{WORK.company}</p>
-                  </div>
-                  <span className="text-base font-semibold text-gray-600">{WORK.period}</span>
-                </div>
-                <ul className="space-y-3">
-                  {WORK.points.map((p, i) => (
-                    <li key={i} className="flex gap-3 text-base text-gray-700">
-                      <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-900" />
-                      <span>{p}</span>
-                    </li>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -6, scale: 1.03 }}
+                className={`rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-7 shadow-lg`}
+              >
+                <h3 className="mb-3 text-xl font-bold">{p.title}</h3>
+                <p className={`mb-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{p.desc}</p>
+                <div className="flex flex-wrap gap-2">
+                  {p.tags.map(t => (
+                    <span
+                      key={t}
+                      className={`rounded-lg ${isDark ? 'bg-white/10' : 'bg-gray-100'} px-3 py-1.5 text-sm font-medium`}
+                    >
+                      {t}
+                    </span>
                   ))}
-                </ul>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* National Service */}
-      <section id="ns" className="border-t border-gray-200 bg-gray-50 py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <FadeIn><h2 className="mb-12 text-4xl font-bold text-gray-900">National Service</h2></FadeIn>
-          <div className="space-y-6">
-            {NS_JOURNEY.map((item, i) => (
-              <FadeIn key={i} delay={i * 100}>
-                <div className="rounded-2xl border-2 border-gray-200 bg-white p-7">
-                  <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
-                      <p className="text-lg font-medium text-gray-700">{item.org}</p>
-                    </div>
-                    <span className="text-base font-semibold text-gray-600">{item.period}</span>
-                  </div>
-                  {item.highlight && <p className="mb-4 text-base font-semibold text-emerald-700">{item.highlight}</p>}
-                  {item.achievements && (
-                    <ul className="mb-4 space-y-2">
-                      {item.achievements.map((a, j) => (
-                        <li key={j} className="flex gap-2 text-base text-gray-700">
-                          <span>•</span><span>{a}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {item.projects && (
-                    <div>
-                      <p className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-600">Projects</p>
-                      <ul className="space-y-2">
-                        {item.projects.map((p, j) => (
-                          <li key={j} className="flex gap-2 text-base text-gray-700">
-                            <span>•</span><span>{p}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
-              </FadeIn>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Skills & Education */}
-      <section className="py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid gap-12 md:grid-cols-2">
-            <FadeIn>
-              <h3 className="mb-6 text-3xl font-bold text-gray-900">Skills</h3>
-              <div className="flex flex-wrap gap-3">
-                {SKILLS.map(s => <span key={s} className="rounded-xl border-2 border-gray-200 bg-white px-5 py-3 text-base font-semibold text-gray-900">{s}</span>)}
-              </div>
-            </FadeIn>
-            <FadeIn delay={100}>
-              <h3 className="mb-6 text-3xl font-bold text-gray-900">Education</h3>
-              <div className="space-y-5">
-                {EDUCATION.map((e, i) => (
-                  <div key={i} className="border-l-4 border-gray-900 pl-5">
-                    <h4 className="text-lg font-bold text-gray-900">{e.degree}</h4>
-                    <p className="text-base font-medium text-gray-700">{e.school}</p>
-                    <p className="text-sm font-semibold text-gray-600">{e.period} • {e.note}</p>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
+      {/* NS Section */}
+      <section id="ns" className="relative py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 text-5xl font-black md:text-6xl"
+          >
+            National Service
+          </motion.h2>
+          
+          <div className="grid gap-6 md:grid-cols-3">
+            {NS_JOURNEY.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -6 }}
+                className={`rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-7`}
+              >
+                <item.icon className="mb-4 h-10 w-10 text-indigo-500" />
+                <div className={`mb-3 text-sm font-bold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {item.period}
+                </div>
+                <h3 className="mb-2 text-xl font-bold">{item.title}</h3>
+                <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Skills */}
+      <section className="relative py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.h3
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-10 text-4xl font-black"
+          >
+            Skills
+          </motion.h3>
+          <div className="flex flex-wrap gap-4">
+            {SKILLS.map((s, i) => (
+              <motion.span
+                key={s}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ scale: 1.1, y: -4 }}
+                className={`rounded-xl border-2 ${borderColor} ${glassColor} backdrop-blur-xl px-6 py-3 text-base font-bold`}
+              >
+                {s}
+              </motion.span>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Contact */}
-      <section id="contact" className="border-t border-gray-200 bg-gray-50 py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <FadeIn><h2 className="mb-12 text-4xl font-bold text-gray-900">Get in Touch</h2></FadeIn>
-          <div className="grid gap-6 md:grid-cols-2">
-            <FadeIn delay={100}>
-              <div>
-                <p className="mb-8 text-lg leading-relaxed text-gray-700">
-                  Open to collaborations, entrepreneurial opportunities, and building with great founders.
-                </p>
-                <a href={`mailto:${PROFILE.email}`} className="inline-flex rounded-lg bg-gray-900 px-7 py-4 text-base font-semibold text-white hover:bg-gray-800">
-                  Send email
-                </a>
-              </div>
-            </FadeIn>
-            <FadeIn delay={200}>
-              <div className="space-y-5 rounded-2xl border-2 border-gray-200 bg-white p-7">
-                <div className="flex justify-between border-b-2 border-gray-100 pb-5">
-                  <span className="text-base font-semibold text-gray-600">Email</span>
-                  <a href={`mailto:${PROFILE.email}`} className="text-base font-semibold text-gray-900 hover:text-gray-700">{PROFILE.email}</a>
+      <section id="contact" className="relative py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 text-5xl font-black md:text-6xl"
+          >
+            Get in Touch
+          </motion.h2>
+          
+          <div className="grid gap-8 md:grid-cols-2">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <p className={`mb-10 text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                Open to collaborations, entrepreneurial opportunities, and building with great founders.
+              </p>
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href={`mailto:${PROFILE.email}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-lg"
+              >
+                <Mail className="h-5 w-5" />
+                Send Email
+              </motion.a>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className={`space-y-6 rounded-2xl border-2 ${borderColor} ${glassColor} backdrop-blur-2xl p-8`}
+            >
+              {[
+                { icon: Mail, label: "Email", value: PROFILE.email, href: `mailto:${PROFILE.email}` },
+                { icon: Phone, label: "Phone", value: PROFILE.phone, href: `tel:${PROFILE.phone}` },
+                { icon: MapPin, label: "Location", value: PROFILE.location },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <item.icon className="h-6 w-6 text-indigo-500" />
+                  <div>
+                    <div className={`text-sm font-bold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {item.label}
+                    </div>
+                    {item.href ? (
+                      <a href={item.href} className="text-lg font-bold hover:text-indigo-500">
+                        {item.value}
+                      </a>
+                    ) : (
+                      <span className="text-lg font-bold">{item.value}</span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex justify-between border-b-2 border-gray-100 pb-5">
-                  <span className="text-base font-semibold text-gray-600">Phone</span>
-                  <a href={`tel:${PROFILE.phone}`} className="text-base font-semibold text-gray-900 hover:text-gray-700">{PROFILE.phone}</a>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-base font-semibold text-gray-600">Location</span>
-                  <span className="text-base font-semibold text-gray-900">{PROFILE.location}</span>
-                </div>
-              </div>
-            </FadeIn>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t-2 border-gray-200 py-8">
-        <div className="mx-auto max-w-6xl px-6 text-center text-base font-medium text-gray-700">
+      <footer className={`border-t-2 ${borderColor} py-10`}>
+        <div className="mx-auto max-w-7xl px-6 text-center text-base font-medium">
           © {new Date().getFullYear()} {PROFILE.name}
         </div>
       </footer>
-
     </div>
   );
 }
